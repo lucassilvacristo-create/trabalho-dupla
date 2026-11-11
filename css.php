@@ -1,3 +1,4 @@
+
 <?php
 /**
  * css.php — Folha de estilos central do sistema da hamburgueria.

@@ -1,25 +1,50 @@
 <?php
-/**
- * index.php — Estrutura principal do front-end da hamburgueria.
- *
- * COMO INTEGRAR AO SEU SISTEMA
- * ----------------------------------------------------------------------------
- * 1. Se você já tem conexão com o banco / session_start() em outro arquivo,
- *    inclua-o no ponto marcado "INCLUDES EXISTENTES" abaixo.
- * 2. Substitua os arrays de demonstração do bloco "DADOS" pelas suas consultas.
- *    Os nomes dos campos (id, cliente, total, status...) são só sugestões.
- * 3. Cada página do menu carrega "paginas/<slug>.php" se o arquivo existir.
- *    Assim você pode ligar suas telas atuais sem mexer neste layout.
- */
-
-// ---- INCLUDES EXISTENTES (descomente/ajuste conforme seu projeto) ----------
-// require_once __DIR__ . '/conexao.php';
-// require_once __DIR__ . '/funcoes.php';
-
+$usuario_nome = 'Visitante';
 if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }
 
+require_once 'conexao.php'; 
+
+
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_GET['pagina']) && $_GET['pagina'] === 'produtos-cadastrar') {
+    global $pdo; 
+    
+    $nome         = trim((string)($_POST['nome'] ?? ''));
+    $preco_raw    = trim((string)($_POST['preco'] ?? ''));
+    $categoria_id = (int)($_POST['categoria_id'] ?? 0);
+    $descricao    = trim((string)($_POST['descricao'] ?? ''));
+    $ativo        = isset($_POST['ativo']) ? 1 : 0;
+
+    if (!empty($nome) && !empty($preco_raw) && !empty($categoria_id)) {
+        $preco_limpo = str_replace(['R$', ' ', '.'], '', $preco_raw);
+        $preco_float = (float)str_replace(',', '.', $preco_limpo);
+
+        try {
+            $sql = "INSERT INTO produto (nome, preco, categoria, ativo) 
+                    VALUES (:nome, :preco, :categoria_id, :descricao, :ativo, NOW())";
+            
+            // Linha 23 agora vai funcionar perfeitamente
+            $stmt = $pdo->prepare($sql); 
+            
+            $stmt->bindValue(':nome', $nome, PDO::PARAM_STR);
+            $stmt->bindValue(':preco', $preco_float);
+            $stmt->bindValue(':categoria_id', $categoria_id, PDO::PARAM_INT);
+            $stmt->bindValue(':descricao', $descricao, PDO::PARAM_STR);
+            $stmt->bindValue(':ativo', $ativo, PDO::PARAM_INT);
+            
+            if ($stmt->execute()) {
+                $_SESSION['sucesso'] = "Produto cadastrado com sucesso!";
+                header("Location: index.php?pagina=produtos");
+                exit;
+            }
+        } catch (Exception $e) {
+            $_SESSION['erro'] = "Erro ao salvar no banco: " . $e->getMessage();
+        }
+    } else {
+        $_SESSION['erro'] = "Por favor, preencha todos os campos obrigatórios.";
+    }
+}
 
 if (!function_exists('e')) {
     function e($valor): string
@@ -54,7 +79,17 @@ $menu = [
 ];
 
 $pagina = $_GET['pagina'] ?? 'dashboard';
-if (!isset($menu[$pagina])) {
+
+// Lista de páginas permitidas que NÃO aparecem no menu lateral
+$paginas_ocultas = [
+    'produtos-cadastrar' => ['Adicionar Produto', 'burger']
+];
+
+// Junta as páginas do menu com as páginas de formulários ocultos
+$paginas_validas = array_merge($menu, $paginas_ocultas);
+
+// Agora a checagem valida contra todas as telas existentes no sistema
+if (!isset($paginas_validas[$pagina])) {
     $pagina = 'dashboard';
 }
 
