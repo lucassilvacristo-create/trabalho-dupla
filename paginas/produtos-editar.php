@@ -7,8 +7,11 @@ $produto = null;
 
 if ($id > 0) {
     try {
-        // Ajuste "id_produto" caso sua coluna tenha outro nome
-        $stmt = $pdo->prepare("SELECT * FROM produto WHERE id_produto = :id LIMIT 1");
+        // Descobre automaticamente o nome da primeira coluna (chave primária) da tabela produto
+        $colStmt = $pdo->query("SHOW COLUMNS FROM produto");
+        $primeiraColuna = $colStmt->fetchColumn();
+
+        $stmt = $pdo->prepare("SELECT * FROM produto WHERE {$primeiraColuna} = :id LIMIT 1");
         $stmt->bindValue(':id', $id, PDO::PARAM_INT);
         $stmt->execute();
         $produto = $stmt->fetch(PDO::FETCH_ASSOC);
@@ -19,7 +22,7 @@ if ($id > 0) {
 
 if (!$produto) {
     $_SESSION['erro'] = "Produto não encontrado.";
-    header("Location: index.php?pagina=produtos");
+    echo "<script>window.location.href = 'index.php?pagina=produtos';</script>";
     exit;
 }
 

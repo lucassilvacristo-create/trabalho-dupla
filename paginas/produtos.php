@@ -65,10 +65,10 @@ try {
                         <?php else: ?>
                             <span style="background: var(--red-soft); color: var(--red-dark); padding: 2px 8px; border-radius: 999px; font-size: 0.75rem; font-weight: bold; text-transform: uppercase;">Indisponível</span>
                         <?php endif; ?>
-
-                        <a href="?pagina=produtos-editar&id_produto=<?= (int)$produto['id_produto'] ?>" style="border: 1px solid var(--line); background: var(--white); padding: 4px 10px; border-radius: 6px; cursor: pointer; font-size: 0.85rem; text-decoration: none; color: inherit;">
-                            Editar
-                        </a>
+                        <?php $idItem = reset($produto); ?>
+                        <a href="?pagina=produtos-editar&id=<?= (int)$idItem ?>" style="border: 1px solid var(--line); background: var(--white); padding: 4px 10px; border-radius: 6px; cursor: pointer; font-size: 0.85rem; text-decoration: none; color: inherit;">
+                       Editar
+                    </a>
                     </div>
                 </div>
             <?php endforeach; ?>

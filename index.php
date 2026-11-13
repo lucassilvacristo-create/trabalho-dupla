@@ -84,7 +84,8 @@ $pagina = $_GET['pagina'] ?? 'dashboard';
 
 // Lista de páginas permitidas que NÃO aparecem no menu lateral
 $paginas_ocultas = [
-    'produtos-cadastrar' => ['Adicionar Produto', 'burger']
+    'produtos-cadastrar' => ['Adicionar Produto', 'burger'],
+    'produtos-editar'    => ['Editar Produto', 'burger']
 ];
 
 // Junta as páginas do menu com as páginas de formulários ocultos
