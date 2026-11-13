@@ -39,6 +39,7 @@ CREATE TABLE produto (
     id_produto  INT PRIMARY KEY AUTO_INCREMENT,
     nome        VARCHAR(100) NOT NULL,
     categoria   VARCHAR(60),
+    descricao   VARCHAR(100),
     preco       INT NOT NULL,
     ativo       BOOLEAN NOT NULL DEFAULT TRUE
 );
@@ -133,14 +134,14 @@ INSERT INTO caixa (data_abertura, data_fechamento, valor_inicial, status, id_usu
 ('2026-10-07 10:00:00', NULL,                  25000, 'ABERTO',  5);
 
 INSERT INTO produto (nome, categoria, preco, ativo) VALUES
-('X-Burger',               'Lanches',     2800, TRUE),
-('X-Bacon',                'Lanches',     3400, TRUE),
-('Pizza Margherita',       'Pizzas',      5200, TRUE),
-('Pizza Calabresa',        'Pizzas',      5600, TRUE),
-('Porção de Batata Frita', 'Porções',     2600, TRUE),
-('Refrigerante Lata',      'Bebidas',      600, TRUE),
-('Suco de Laranja',        'Bebidas',      900, TRUE),
-('Pudim de Leite',         'Sobremesas',  1200, FALSE);
+('X-Burger',               'Lanches',     28.00, TRUE),
+('X-Bacon',                'Lanches',     34.00, TRUE),
+('Pizza Margherita',       'Pizzas',      52.00, TRUE),
+('Pizza Calabresa',        'Pizzas',      56.00, TRUE),
+('Porção de Batata Frita', 'Porções',     26.00, TRUE),
+('Refrigerante Lata',      'Bebidas',      6.00, TRUE),
+('Suco de Laranja',        'Bebidas',      9.00, TRUE),
+('Pudim de Leite',         'Sobremesas',  12.00, FALSE);
 
 INSERT INTO ingrediente (nome, estoque_atual) VALUES
 ('Pão de hambúrguer',          120),

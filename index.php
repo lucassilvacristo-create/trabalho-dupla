@@ -7,43 +7,45 @@ if (session_status() === PHP_SESSION_NONE) {
 require_once 'conexao.php'; 
 
 
-if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_GET['pagina']) && $_GET['pagina'] === 'produtos-cadastrar') {
-    global $pdo; 
-    
-    $nome         = trim((string)($_POST['nome'] ?? ''));
-    $preco_raw    = trim((string)($_POST['preco'] ?? ''));
-    $categoria_id = (int)($_POST['categoria_id'] ?? 0);
-    $descricao    = trim((string)($_POST['descricao'] ?? ''));
-    $ativo        = isset($_POST['ativo']) ? 1 : 0;
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_GET['pagina']) && $_GET['pagina'] === 'produtos-editar') {
+  global $pdo;
 
-    if (!empty($nome) && !empty($preco_raw) && !empty($categoria_id)) {
-        $preco_limpo = str_replace(['R$', ' ', '.'], '', $preco_raw);
-        $preco_float = (float)str_replace(',', '.', $preco_limpo);
+  $id        = (int)($_POST['id'] ?? 0);
+  $nome      = trim((string)($_POST['nome'] ?? ''));
+  $preco_raw = trim((string)($_POST['preco'] ?? ''));
+  $categoria = trim((string)($_POST['categoria'] ?? ''));
+  $descricao = trim((string)($_POST['descricao'] ?? ''));
+  $ativo     = isset($_POST['ativo']) ? 1 : 0;
 
-        try {
-            $sql = "INSERT INTO produto (nome, preco, categoria, ativo) 
-                    VALUES (:nome, :preco, :categoria_id, :descricao, :ativo, NOW())";
-            
-            // Linha 23 agora vai funcionar perfeitamente
-            $stmt = $pdo->prepare($sql); 
-            
-            $stmt->bindValue(':nome', $nome, PDO::PARAM_STR);
-            $stmt->bindValue(':preco', $preco_float);
-            $stmt->bindValue(':categoria_id', $categoria_id, PDO::PARAM_INT);
-            $stmt->bindValue(':descricao', $descricao, PDO::PARAM_STR);
-            $stmt->bindValue(':ativo', $ativo, PDO::PARAM_INT);
-            
-            if ($stmt->execute()) {
-                $_SESSION['sucesso'] = "Produto cadastrado com sucesso!";
-                header("Location: index.php?pagina=produtos");
-                exit;
-            }
-        } catch (Exception $e) {
-            $_SESSION['erro'] = "Erro ao salvar no banco: " . $e->getMessage();
-        }
-    } else {
-        $_SESSION['erro'] = "Por favor, preencha todos os campos obrigatórios.";
-    }
+  if ($id > 0 && !empty($nome) && !empty($preco_raw) && !empty($categoria)) {
+      $preco_limpo = str_replace(['R$', ' ', '.'], '', $preco_raw);
+      $preco_float = (float)str_replace(',', '.', $preco_limpo);
+
+      try {
+          // Se a coluna chave primária na sua tabela for id_produto, troque "WHERE id = :id" por "WHERE id_produto = :id"
+          $sql = "UPDATE produto 
+                  SET nome = :nome, preco = :preco, categoria = :categoria, descricao = :descricao, ativo = :ativo 
+                  WHERE id_produto = :id";
+
+          $stmt = $pdo->prepare($sql);
+          $stmt->bindValue(':nome', $nome, PDO::PARAM_STR);
+          $stmt->bindValue(':preco', $preco_float);
+          $stmt->bindValue(':categoria', $categoria, PDO::PARAM_STR);
+          $stmt->bindValue(':descricao', $descricao, PDO::PARAM_STR);
+          $stmt->bindValue(':ativo', $ativo, PDO::PARAM_INT);
+          $stmt->bindValue(':id', $id, PDO::PARAM_INT);
+
+          if ($stmt->execute()) {
+              $_SESSION['sucesso'] = "Produto atualizado com sucesso!";
+              header("Location: index.php?pagina=produtos");
+              exit;
+          }
+      } catch (Exception $e) {
+          $_SESSION['erro'] = "Erro ao atualizar produto: " . $e->getMessage();
+      }
+  } else {
+      $_SESSION['erro'] = "Por favor, preencha todos os campos obrigatórios.";
+  }
 }
 
 if (!function_exists('e')) {

@@ -1,12 +1,12 @@
 <?php
  
-$host  = 'localhost';  
+$host  = 'localhost';
 $banco = 'db_pedidos';  
 $user  = 'root';       
 $senha = '';        
 
 try {
-    $pdo = new PDO("mysql:host=$host;dbname=$banco;charset=utf8mb4", $user, $senha);
+    $pdo = new PDO("mysql:host=$host;port=3307;dbname=$banco;charset=utf8mb4", $user, $senha);
     $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);     
     $pdo->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_ASSOC); 
 } catch (PDOException $erro) {

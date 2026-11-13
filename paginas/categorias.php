@@ -4,9 +4,6 @@
         <h1>Categorias</h1>
         <p>Organize seu cardápio em grupos para facilitar a navegação do cliente.</p>
     </div>
-    <button class="icon-btn" style="width: auto; height: 40px; padding: 0 16px; border-radius: var(--radius-sm); background: var(--black); color: var(--white); font-weight: 600;">
-        Nova Categoria
-    </button>
 </div>
 
 <div class="card" style="background: var(--white); border-radius: var(--radius); border: 1px solid var(--line); padding: 24px; max-width: 800px;">

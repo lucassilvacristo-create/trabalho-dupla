@@ -20,12 +20,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     // Captura e sanitiza os dados para evitar códigos maliciosos
     $nome        = trim((string)($_POST['nome'] ?? ''));
     $preco_raw   = trim((string)($_POST['preco'] ?? ''));
-    $categoria_id= (int)($_POST['categoria_id'] ?? 0);
+    $categoria   = trim((string)($_POST['categoria'] ?? ''));
     $descricao   = trim((string)($_POST['descricao'] ?? ''));
     $ativo       = isset($_POST['ativo']) ? 1 : 0;
 
     // Validação simples: impede campos obrigatórios em branco
-    if (empty($nome) || empty($preco_raw) || empty($categoria_id)) {
+    if (empty($nome) || empty($preco_raw) || empty($categoria)) {
         $_SESSION['erro'] = "Por favor, preencha todos os campos obrigatórios.";
         header("Location: index.php?pagina=produtos-cadastrar");
         exit;
@@ -38,15 +38,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     try {
         // 3. Query SQL utilizando Prepared Statements (Segurança total contra SQL Injection)
         // Certifique-se de que os nomes das colunas e da tabela coincidem com o seu banco
-        $sql = "INSERT INTO produtos (nome, preco, categoria_id, descricao, ativo, criado_em) 
-                VALUES (:nome, :preco, :categoria_id, :descricao, :ativo, NOW())";
+        $sql = "INSERT INTO produtos (nome, preco, categoria, descricao, ativo, criado_em) 
+                VALUES (:nome, :preco, :categoria, :descricao, :ativo, NOW())";
         
         $stmt = $pdo->prepare($sql);
         
         // Vincula os parâmetros com segurança
         $stmt->bindValue(':nome', $nome, PDO::PARAM_STR);
         $stmt->bindValue(':preco', $preco_float);
-        $stmt->bindValue(':categoria_id', $categoria_id, PDO::PARAM_INT);
+        $stmt->bindValue(':categoria', $categoria, PDO::PARAM_INT);
         $stmt->bindValue(':descricao', $descricao, PDO::PARAM_STR);
         $stmt->bindValue(':ativo', $ativo, PDO::PARAM_INT);
         

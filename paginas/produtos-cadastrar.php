@@ -40,7 +40,7 @@
 
         <div>
             <label style="display: block; font-weight: 600; margin-bottom: 6px; font-size: 0.9rem;">Categoria do Item</label>
-            <select name="categoria_id" style="width: 100%; padding: 10px 14px; border-radius: var(--radius-sm); border: 1px solid var(--line); background: var(--bg); color: var(--black); height: 42px;">
+            <select name="categoria" style="width: 100%; padding: 10px 14px; border-radius: var(--radius-sm); border: 1px solid var(--line); background: var(--bg); color: var(--black); height: 42px;">
                 <option value="1">Hambúrgueres Artesanais</option>
                 <option value="2">Acompanhamentos / Porções</option>
                 <option value="3">Bebidas / Sucos</option>
